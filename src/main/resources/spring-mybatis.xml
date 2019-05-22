@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!--配置alibaba连接池-->
+    <!--连接池就是获取connection的容器-->
+    <bean class="com.alibaba.druid.pool.DruidDataSource" id="dataSource" destroy-method="close"
+          init-method="init">
+        <property name="url" value="${datasource.url}"/>
+        <property name="username" value="${datasource.username}"/>
+        <property name="password" value="${datasource.password}"/>
+    </bean>
+    <!--配置sqlSessionFactoryBean-->
+    <!--mybatis最基本的是sqlSessionFactory接口可以同过sqlSessionFactoryBuild对象构建出sqlSessionFactory-->
+    <!--通过sqlSessionFactory可以获得执行sql的sqlsession-->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+        <!--配置mybatis文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <!--配置数据源-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--配置扫描加载xml文件-->
+        <property name="mapperLocations" value="classpath:mappers/*.xml"/>
+    </bean>
+    <!--配置扫描扫描器对于在basePackage设置的包（包括子包）下的接口类的全类名和在Mapper.xml文件中定义过的命名空间一致，
+	spring将会生成对应的代理对象（在调用 的地方通过@Autowired方式将可以注入接口实例）-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" id="scannerConfigurer">
+        <!--配置包的全限定名-->
+        <property name="basePackage" value="wen.tian.it.dao"/>
+        <!--这个东西不是很理解，目前感觉配不配都行，有人说是因为在spring容器加载可能还未获取到db.properties中的值就
+        已经加载了sqlSessionFactory，结果就时导致dataSource的属性还没有被替换，这样做是为了在spring容器加载完成，
+        然后再构建sqlSessionFactory-->
+        <!--一句话如果不配可能会出错-->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <!--配置spring datasource事务管理类-->
+    <!--事务管理器依赖于datasource连接池-->
+    <!--jdbc事务都是通过连接池来操作-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          id="transactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--配置通知-->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <!--attributes中的method意思是只要以add开头的方法就会使用它后面的属性例如propagation="REQUIRED"-->
+        <!--以方法为单位,指定方法应用什么事务属性 isolation:隔离级别 propagation:传播行为 read-only:是否只读-->
+        <tx:attributes>
+            <tx:method name="update*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false"/>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="select*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置织入-->
+    <aop:config>
+        <!--切点表达式-->
+        <!--[方法访问修饰符（可以不写）] 方法返回值 包名.类名.方法名（方法参数）-->
+        <!--基本上使用这种
+            *.包名..*impl.*(..)
+            意思就是所有返回值，包以及子包中以impl结尾的类的所有方法以及所有参数。
+        -->
+        <aop:pointcut id="transactionPoint"
+                      expression="execution(* wen.tian.it.service..*Impl.*(..))"/>
+        <!--配置切面 切面=切点+通知-->
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPoint"/>
+    </aop:config>
+</beans>
