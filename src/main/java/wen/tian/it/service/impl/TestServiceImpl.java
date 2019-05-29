@@ -6,6 +6,8 @@ import wen.tian.it.dao.TestDao;
 import wen.tian.it.model.User;
 import wen.tian.it.service.TestService;
 
+import java.util.List;
+
 @Service
 public class TestServiceImpl implements TestService {
 
@@ -15,6 +17,11 @@ public class TestServiceImpl implements TestService {
     @Override
     public User selectUser(String uid) {
         return testDao.find(uid);
+    }
+
+    @Override
+    public List<User> selectAllUser() {
+        return testDao.findAllUser();
     }
 
 }

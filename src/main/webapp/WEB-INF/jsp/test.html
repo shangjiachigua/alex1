@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- <meta charset="UTF-8">-->
+    <title>Title</title>
+    <link href="../css/left.css" rel="stylesheet"/>
+    <link href="../css/dtree.css" rel="stylesheet"/>
+</head>
+<body>
+<!--<div>
+    <div style="text-align: center">
+        <form style="margin-left: auto;margin-right: auto">
+            用户名：<input type="text" name="username" placeholder="请输入用户名"><br>
+            密码：<input type="password" name="password" placeholder="请输入密码"><br>
+            <input type="submit" value="登录" name="submit"><br>
+        </form>
+    </div>
+</div>-->
+<!--<div class="divForm">
+       <form action="" method="post">
+        <p>
+        欢迎登陆网站主页
+        </p>
+        <p>
+        用户名：<input type="text" name="username"/>
+        </p>
+        <p>
+        密 &nbsp;&nbsp;码：<input type="password" name="password"/>
+        </p>
+        <input type="submit" value="登录"/>
+       </form>
+        </div>
+  </body>
+
+
+<style type="text/css">
+    .divForm{
+        position: absolute;/*绝对定位*/
+        width: 300px;
+        height: 200px;
+
+        /*border: 1px solid red;*/
+        text-align: center;/*(让div中的内容居中)*/
+        top: 50%;
+        left: 50%;
+        margin-top: -200px;
+        margin-left: -150px;
+    }
+</style>-->
+<!--top-->
+<div style="height: auto">
+    <table align="center">
+        <tr>
+            <td>欢迎：</td>
+        </tr>
+    </table>
+</div>
+<!--left树菜单-->
+<div>
+    <table width="100" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td height="12"></td>
+        </tr>
+    </table>
+    <table width="100%" border="0">
+        <tr>
+            <td>
+                <div class="dtree">
+
+                    <a href="javascript: d.openAll();">展开所有</a> | <a href="javascript: d.closeAll();">关闭所有</a>
+
+                    <script type="text/javascript" src="../js/dtree.js"></script>
+                    <script type="text/javascript">
+
+                        d = new dTree('d');
+                        d.add('01', -1, '系统菜单树');
+                        d.add('0102', '01', '分类管理', '', '', 'mainFrame');
+                        d.add('010201', '0102', '分类管理', 'admin/category/list.html', '', 'mainFrame');
+                        d.add('0104', '01', '商品管理');
+                        d.add('010401', '0104', '商品管理', 'admin/product/list.html', '', 'mainFrame');
+                        d.add('0106', '01', '订单管理');
+                        d.add('010601', '0106', '订单管理', 'admin/order/list.html', '', 'mainFrame');
+                        document.write(d);
+                    </script>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

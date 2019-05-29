@@ -9,4 +9,7 @@
            uid = #{uid}
        </where>
     </select>
+    <select id="findAllUser" resultType="User">
+        SELECT * from user
+    </select>
 </mapper>
